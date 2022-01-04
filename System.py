@@ -1,4 +1,4 @@
-from Poisson import *
+from Generator import *
 
 
 class System(Poisson):
