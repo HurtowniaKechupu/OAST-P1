@@ -1,5 +1,6 @@
 import numpy as np
 
+#todo wszystko self musi być parametrem
 def gen_t_obslugi(self):
     return -np.log(1 - np.random.random()) / self.mi
 

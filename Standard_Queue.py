@@ -22,7 +22,7 @@ class StandardQueue:
         self.czasy_rozpoczecia = czasy_rozpoczecia
 
         self.event_list = list()
-        self.list = Event_List.Event_List(self.event_list)  # Obiekt listy zdarzen
+        self.list = Event_List.EventList(self.event_list)  # Obiekt listy zdarzen
 
         self.lista_czasow = list()
         self.ile_zdarzen = list()
@@ -42,7 +42,7 @@ class StandardQueue:
 
 #########################################
 
-    def run_Standard(self):
+    def run_standard(self):
 
         print("\n\nZwykła Kolejka M/M/1(bez wyłączeń)\n")
         print("\tmi = " + str(self.mi))

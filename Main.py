@@ -1,4 +1,5 @@
-import Standard_Queue
+from Standard_Queue import StandardQueue
+from Start_Stop_Queue import StartStopQueue
 
 # Parametry początkowe symulacji
 MAX_CZAS_SYMULACJI = 10000
@@ -27,8 +28,8 @@ while mode not in [1, 2]:
     mode = int(input("\nWybierz rodzaj kolejki do symulacji, wpisując odpowiednią cyfrę, gdzie:\n"
                         "   1) Standardowa kolejka M/M/1  2) Kolejka M/M/1 Continuous Service: "))
     if mode == 1:
-        wynik_standard = standard.uruchom_MM1()
+        wynik_standard = StandardQueue.run_standard
     elif mode == 2:
-        wynik_continuous = continuous_service.uruchom_MM1CS()
+        wynik_continuous = StartStopQueue.run_start_stop
     else:
         print("Wprowadzono nieprawidłowy numer wyboru kolejki. Proszę spróbować ponownie.\n")
