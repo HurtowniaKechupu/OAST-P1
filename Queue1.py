@@ -1,3 +1,5 @@
+
+#todo spolszczyć
 class Queue1:
     def __init__(self):
         self.eventsInQueue = []

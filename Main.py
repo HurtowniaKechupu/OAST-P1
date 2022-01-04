@@ -1,9 +1,9 @@
 from Configuration import *
-from System import *
 from Simulation import *
 from Statistics import *
 
-
+#todo spolszczyć
+#todo dodać drukowanie do pliku
 def generate_eventList(config1, lambda2):   # generacja listy zdarzeń
     config1.lambda1 = lambda2
     event_list1 = EventList()
@@ -75,6 +75,3 @@ def main():
 
     statistics.plot()
 
-
-if __name__ == '__main__':
-    main()

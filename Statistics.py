@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-
+#todo wywalić statystyki
 class Statistics:   # rysowanie wykresu na podstawie zebranych danych
     def __init__(self, configuration):
         self.configuration = configuration

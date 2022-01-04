@@ -1,3 +1,4 @@
+#todo spolszczyć
 class Event:
     def __init__(self, type1, arrival_time, service_time):
         self.type = type1                   # typ: 0 - message; 1 - server_on; 2 - server_off; 3 - end

@@ -1,3 +1,4 @@
+#todo spolszczyć
 class Configuration:
     def __init__(self, lowerValueOfArrivals, upperValueOfArrivals, seed, switching, numOfSimulations, simulationDuration, econ, ecoff, d, task):
         self.lowerValueOfArrivals = lowerValueOfArrivals    # min. średnia intensywność napływu lambda

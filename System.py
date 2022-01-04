@@ -1,7 +1,7 @@
 from Event import *
 import numpy as np
 
-
+#todo spolszczyć
 class Generator:
     def __init__(self, configuration):
         self.configuration = configuration

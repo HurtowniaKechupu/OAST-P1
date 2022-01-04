@@ -1,7 +1,7 @@
 from Queue1 import *
 from System import *
 
-
+#todo spolszczyć
 class Simulation:
     def __init__(self, configuration):
         self.configuration = configuration
