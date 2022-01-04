@@ -2,21 +2,13 @@ from Event import *
 import numpy as np
 
 
-
-class Poisson:  # generator Poissona
+class Generator:
     def __init__(self, configuration):
         self.configuration = configuration
 
-    @staticmethod
-    def generateRandomEventWithMean(mean):
+    def generateRandomEventWithMean(self, mean):
         return -np.log(1 - np.random.random()) / mean
 
-
-class Generator(Poisson):
-    def __init__(self, configuration):
-        super().__init__(configuration) #czy to chodzi, że może wykonywać metody Poissona
-
-    
     def getMessageTimeGenerator(self):
         return self.generateRandomEventWithMean(self.configuration.lambda1)
 
@@ -61,9 +53,9 @@ class Generator(Poisson):
 
             event_list.put(e)
 
-class System(Poisson):
+
+class System:
     def __init__(self, queue, configuration):
-        super().__init__(configuration)
         self.eventQueue = queue
 
         self.currentTime = 0.0
@@ -82,6 +74,7 @@ class System(Poisson):
         self.systemEvents = []
         self.systemState = []
 
+        self.configuration = configuration
     def process(self, current_event):
         self.currentTime = current_event.arrival_time
         self.doProcessing()
