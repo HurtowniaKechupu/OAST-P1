@@ -1,5 +1,5 @@
 from Configuration import *
-from Generator import *
+from System import *
 from Simulation import *
 from Statistics import *
 
