@@ -2,6 +2,7 @@ import numpy as np
 
 import Event_List
 
+#todo IMHO wszystko jest źle i do wyjebania ale na razie nie ruszam -A
 
 class StartStopQueue:
     def __init__(self, lam, mi, ro, acs, obsluzonych_zdarzen, czas_obslugi_imag, czas_obslugi_real, zdarzen_w_kolejce,
