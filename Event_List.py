@@ -15,5 +15,7 @@ class EventList:
         return temp
 
     @staticmethod
-    def sortuj_liste(list):
+    def sort_list(list):
         list.sort(key=lambda event: event.t_arrival)
+
+
