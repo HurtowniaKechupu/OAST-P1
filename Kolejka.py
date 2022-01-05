@@ -1,18 +1,16 @@
-#todo spolszczyć
 class Kolejka:
-
     def __init__(self):
-        self.eventsInQueue = []
+        self.zdarzeniaWKolejce = []
 
     def put(self, event):
-        self.eventsInQueue.append(event)
+        self.zdarzeniaWKolejce.append(event)
 
     def get(self):
-        if len(self.eventsInQueue) == 0:
+        if len(self.zdarzeniaWKolejce) == 0:
             return None
-        temp = self.eventsInQueue[0]
-        self.eventsInQueue.pop(0)
+        temp = self.zdarzeniaWKolejce[0]
+        self.zdarzeniaWKolejce.pop(0)
         return temp
 
     def size(self):
-        return len(self.eventsInQueue)
+        return len(self.zdarzeniaWKolejce)

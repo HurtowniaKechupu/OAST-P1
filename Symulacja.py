@@ -15,23 +15,23 @@ class Symulacja:
         self.srednieOpoznienie = 0.0
 
         self.kolejka = Kolejka()   # pojedyncze zdarzenie generowane w konstruktorze kolejki
-        self.system = System(self.kolejka, self.ustawienia)    # system (serwer) jest domyślnie pusty
+        self.system = System(self.kolejka, self.ustawienia)    # domyślnie pusty system
 
-    def run_MM1(self, lista_zdarzen):
+    def uruchom_MM1(self, lista_zdarzen):
         self.system.aktualizujStanSystemu()    # stan początkowy systemu
         while not lista_zdarzen.isEmpty():
-            currentEvent = lista_zdarzen.get()
-            self.system.obsluz(currentEvent)   # obsługa zdarzenia
+            obecneZdarzenie = lista_zdarzen.get()
+            self.system.obsluz(obecneZdarzenie)   # obsługa zdarzenia
 
-            if currentEvent.typ == 0:
-                self.kolejka.put(currentEvent)
+            if obecneZdarzenie.typ == 0:
+                self.kolejka.put(obecneZdarzenie)
                 self.system.updateQueueStatistics()
 
-        times = []
+        opoznienia = []
         for i in range(len(self.system.processedEvents)):   # obliczenie średniego opóźnienia z uwzględnieniem rozbiegu
             if self.system.processedEvents[i].t_przyjscia > self.ustawienia.rozbieg:
-                times.append(self.system.processedEvents[i].t_wyjscia - self.system.processedEvents[i].t_przyjscia)
-        self.srednieOpoznienie = sum(times) / len(times)
+                opoznienia.append(self.system.processedEvents[i].t_wyjscia - self.system.processedEvents[i].t_przyjscia)
+        self.srednieOpoznienie = sum(opoznienia) / len(opoznienia)
 
         self.system.aktualizujStanSystemu()
         return self.srednieOpoznienie

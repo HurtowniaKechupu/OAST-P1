@@ -63,7 +63,7 @@ def main():
         for i in range(ustawienia.liczbaSymulacji):  # symulacje powtarzamy wielokrotnie
             lista_zdarzen = generate_eventList(ustawienia, tempLambda)
             symulacja = Symulacja(ustawienia)
-            meanDelaySim = symulacja.run_MM1(lista_zdarzen)
+            meanDelaySim = symulacja.uruchom_MM1(lista_zdarzen)
             meanDelaySystemTimeSum += meanDelaySim
             np.random.seed(ustawienia.seed + 2137 * i)  # zmiana ziarna po każdej symulacji
             print("Symulacja nr: {}, E[T] w aktualnej symulacji: {}\n".format(i + 1, meanDelaySim))
