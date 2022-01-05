@@ -1,6 +1,6 @@
 
 #todo spolszczyć
-class Queue1:
+class Kolejka:
     def __init__(self):
         self.eventsInQueue = []
 

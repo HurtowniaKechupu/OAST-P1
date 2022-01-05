@@ -1,77 +1,78 @@
-from Configuration import *
-from Simulation import *
+from Ustawienia import *
+from Symulacja import *
 from Statistics import *
 
 #todo spolszczyć
 #todo dodać drukowanie do pliku
-def generate_eventList(config1, lambda2):   # generacja listy zdarzeń
-    config1.lambda1 = lambda2
-    event_list1 = EventList()
-    generator = Generator(config1)
-    generator.generate(event_list1)
-    event_list1.print_list()
-    return event_list1
+def generate_eventList(ustawienia, lambda2):   # generacja listy zdarzeń
+    ustawienia.tempLambda = lambda2
+    lista_zdarzen = ListaZdarzen()
+    generator = Generator(ustawienia)
+    generator.generuj(lista_zdarzen)
+    lista_zdarzen.print_list()
+    return lista_zdarzen
 
 
 def print_states(x, y, z):
-    print("Zmiany stanu systemu (self.currentSystemTime, self.state): {}\n"
-          "Zdarzenia w systemie (self.currentSystemTime, self.systemEvent is None ? 0 : 1): {}\n"
-          "Zdarzenia w kolejce (self.currentSystemTime, self.eventQueue.size()): {}"
+    print("Zmiany stanu systemu (self.obecnyCzasSystemu, self.stan): {}\n"
+          "Zdarzenia w systemie (self.obecnyCzasSystemu, self.systemEvent is None ? 0 : 1): {}\n"
+          "Zdarzenia w kolejce (self.obecnyCzasSystemu, self.kolejkaZdarzen.size()): {}"
           .format(x, y, z))
 
 
 def main():
-    task = 1
+    zadanie = 1
     seed = 128
 
-    if task == 1:
-        lowerValueOfArrivals = 0.5
-        upperValueOfArrivals = 6
-        numOfSimulations = 20
-        simulationDuration = 500
-        switching = False
-    elif task == 2:
-        lowerValueOfArrivals = 0.5
-        upperValueOfArrivals = 4
-        numOfSimulations = 2
-        simulationDuration = 50000
-        switching = True
+    if zadanie == 1:
+        minLambda = 0.5
+        maxLambda = 6
+        liczbaSymulacji = 20
+        dlugoscSymulacji = 500
+        wylaczanie = False
+    elif zadanie == 2:
+        minLambda = 0.5
+        maxLambda = 4
+        liczbaSymulacji = 2
+        dlugoscSymulacji = 50000
+        wylaczanie = True
     else:
         print("Błedny numer zadania!")
         return 1
 
-    config = Configuration(lowerValueOfArrivals=lowerValueOfArrivals,
-                           upperValueOfArrivals=upperValueOfArrivals,
-                           seed=seed,
-                           switching=switching,
-                           numOfSimulations=numOfSimulations,
-                           simulationDuration=simulationDuration,
-                           econ=40,
-                           ecoff=35,
-                           d=0.125,
-                           task=task)
+    ustawienia = Ustawienia(minLambda=minLambda,
+                        maxLambda=maxLambda,
+                        seed=seed,
+                        wylaczanie=wylaczanie,
+                        liczbaSymulacji=liczbaSymulacji,
+                        dlugoscSymulacji=dlugoscSymulacji,
+                        econ=40,
+                        ecoff=35,
+                        d=0.125,
+                        zadanie=zadanie)
 
-    print("Symulator kolejki M/M/1 - Zadanie", task)
-    np.random.seed(config.seed)
-    statistics = Statistics(config)
-    lambda1 = config.lowerValueOfArrivals
+    print("Symulator kolejki M/M/1 - Zadanie", zadanie)
+    np.random.seed(ustawienia.seed)
+    statistics = Statistics(ustawienia)
+    tempLambda = ustawienia.minLambda
 
-    while lambda1 <= config.upperValueOfArrivals:  # symulacje dla wielu wartości lambda
+    while tempLambda <= ustawienia.maxLambda:  # symulacje dla wielu wartości lambda
         meanDelaySystemTimeSum = 0.0  # wartość średniego opóźnienia w systemie E[T]
 
-        print("\nAktualna wartość Lambda:", lambda1)
-        for i in range(config.numOfSimulations):  # symulacje powtarzamy wielokrotnie
-            event_list = generate_eventList(config, lambda1)
-            simulation = Simulation(config)
-            meanDelaySim = simulation.run_MM1(event_list)
+        print("\nAktualna wartość Lambda:", tempLambda)
+        for i in range(ustawienia.liczbaSymulacji):  # symulacje powtarzamy wielokrotnie
+            lista_zdarzen = generate_eventList(ustawienia, tempLambda)
+            symulacja = Symulacja(ustawienia)
+            meanDelaySim = symulacja.run_MM1(lista_zdarzen)
             meanDelaySystemTimeSum += meanDelaySim
-            np.random.seed(config.seed + 10 * i)  # zmiana ziarna po każdej symulacji
+            np.random.seed(ustawienia.seed + 2137 * i)  # zmiana ziarna po każdej symulacji
             print("Symulacja nr: {}, E[T] w aktualnej symulacji: {}\n".format(i + 1, meanDelaySim))
-            print_states(simulation.system.systemState, simulation.system.systemEvents, simulation.system.queueEvents)
+            print_states(symulacja.system.systemState, symulacja.system.systemEvents, symulacja.system.queueEvents)
             print("------------------------------------------------------------------------------------------------------------------------------------\n")
-        print("E[T] dla danej wartości Lambda:", meanDelaySystemTimeSum / config.numOfSimulations)
-        statistics.addStatistics(meanDelaySystemTimeSum / config.numOfSimulations, lambda1)
-        lambda1 += 0.25
+        print("E[T] dla danej wartości Lambda:", meanDelaySystemTimeSum / ustawienia.liczbaSymulacji)
+        statistics.addStatistics(meanDelaySystemTimeSum / ustawienia.liczbaSymulacji, tempLambda)
+        tempLambda += 0.25
 
     statistics.plot()
 
+main()

@@ -1,68 +1,69 @@
-from Event import *
+from Lista_Zdarzen import *
 import numpy as np
 
 #todo spolszczyć
 class Generator:
-    def __init__(self, configuration):
-        self.configuration = configuration
+    def __init__(self, ustawienia):
+        self.ustawienia = ustawienia
 
-    def generateRandomEventWithMean(self, mean):
-        return -np.log(1 - np.random.random()) / mean
+    def generujZdarzeniePoisson(self, srednia):
+        return -np.log(1 - np.random.random()) / srednia
 
-    def getMessageTimeGenerator(self):
-        return self.generateRandomEventWithMean(self.configuration.lambda1)
+    def generujCzasWiadomosci(self):
+        return self.generujZdarzeniePoisson(self.ustawienia.tempLambda)
 
-    def generate(self, event_list1):
-        self.generateMessages(event_list1)
-        if self.configuration.switching:
-            self.generateSwitchingEvents(event_list1)
+    def generuj(self, lista_zdarzen):
+        self.generujWiadomosci(lista_zdarzen)
+        if self.ustawienia.wylaczanie:
+            self.generujZdarzeniaPrzelaczania(lista_zdarzen)
 
-        e = Event(3, self.configuration.simulationDuration, 0)  # na końcu generowane zdarzenie typu 3 - koniec
-        event_list1.put(e)
-        return event_list1
+        e = Zdarzenie(3, self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
+        lista_zdarzen.put(e)
+        return lista_zdarzen
 
-    def generateMessages(self, event_list):     # generator zdarzeń typu 0
-        time = self.getMessageTimeGenerator()
-        if self.configuration.numberOfMessages:
-            number_of_messages = self.configuration.numberOfMessages
-            while number_of_messages != 0:
-                e = Event(0, time, self.generateRandomEventWithMean(1 / self.configuration.d))
-                event_list.put(e)
+    def generujWiadomosci(self, lista_zdarzen):     # generator zdarzeń typu 0
+        czas = self.generujCzasWiadomosci()
+        if self.ustawienia.minLiczbaZdarzen:
+            liczba_wiadomosci = self.ustawienia.minLiczbaZdarzen
+            while liczba_wiadomosci != 0:
+                zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                lista_zdarzen.put(zdarzenie)
 
-                time += self.getMessageTimeGenerator()
-                number_of_messages -= 1
+                czas += self.generujCzasWiadomosci()
+                liczba_wiadomosci -= 1
 
-            while time < self.configuration.simulationDuration:
-                e = Event(0, time, self.generateRandomEventWithMean(1 / self.configuration.d))
-                event_list.put(e)
+            while czas < self.ustawienia.dlugoscSymulacji:
+                zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                lista_zdarzen.put(zdarzenie)
 
-                time += self.getMessageTimeGenerator()
+                czas += self.generujCzasWiadomosci()
 
-    def generateSwitchingEvents(self, event_list):  # generator zdarzeń typu 1 i 2
-        time = self.generateRandomEventWithMean(1/self.configuration.econ)
-        isOn = True
-        while time < self.configuration.simulationDuration:
-            if isOn:
-                e = Event(2, time, 0)
-                time += self.generateRandomEventWithMean(1/self.configuration.ecoff)
-                isOn = False
+    def generujZdarzeniaPrzelaczania(self, lista_zdarzen):  # generator zdarzeń typu 1 i 2
+        czas = self.generujZdarzeniePoisson(1 / self.ustawienia.econ)
+        wlaczony = True
+        while czas < self.ustawienia.dlugoscSymulacji:
+            if wlaczony:
+                zdarzenie = Zdarzenie(2, czas, 0)
+                czas += self.generujZdarzeniePoisson(1 / self.ustawienia.ecoff)
+                wlaczony = False
             else:
-                e = Event(1, time, 0)
-                time += self.generateRandomEventWithMean(1 / self.configuration.econ)
-                isOn = True
+                zdarzenie = Zdarzenie(1, czas, 0)
+                czas += self.generujZdarzeniePoisson(1 / self.ustawienia.econ)
+                wlaczony = True
 
-            event_list.put(e)
+            lista_zdarzen.put(zdarzenie)
 
 
 class System:
-    def __init__(self, queue, configuration):
-        self.eventQueue = queue
+    def __init__(self, kolejka, ustawienia):
+        self.kolejkaZdarzen = kolejka
+        self.ustawienia = ustawienia
 
-        self.currentTime = 0.0
-        self.currentSystemTime = 0.0
-        self.state = 1
-        self.timeOff = 0.0
-        self.timeOn = 0.0
+        self.obecnyCzas = 0.0
+        self.obecnyCzasSystemu = 0.0
+        self.stan = 1
+        self.t_wyl = 0.0 #czas wyłącz
+        self.t_wl = 0.0 #czas włącz
 
         self.systemEvent = None
         self.remainingProcessingTime = 0.0
@@ -74,68 +75,65 @@ class System:
         self.systemEvents = []
         self.systemState = []
 
-        self.configuration = configuration
-    def process(self, current_event):
-        self.currentTime = current_event.arrival_time
-        self.doProcessing()
-        self.currentSystemTime = self.currentTime
 
-        if current_event.type == 1:     # obsługa włączeń i wyłączeń serwera
-            self.state = 1
-            self.updateSystemState()
-        elif current_event.type == 2:
-            self.state = 2
-            self.updateSystemState()
-
-    def doProcessing(self):
-        timePassed = self.currentTime - self.currentSystemTime
-        if self.state == 2:
-            self.timeOff += timePassed
+    def obsluz(self, obecne_zdarzenie):
+        self.obecnyCzas = obecne_zdarzenie.t_przyjscia
+        uplywCzasu = self.obecnyCzas - self.obecnyCzasSystemu
+        if self.stan == 2:
+            self.t_wyl += uplywCzasu
             return
         else:
-            self.timeOn += timePassed
+            self.t_wl += uplywCzasu
 
-        while self.currentSystemTime < self.currentTime:    # obsługa zdarzenia
+        while self.obecnyCzasSystemu < self.obecnyCzas:  # obsługa zdarzenia
             self.processEvent()
+        self.obecnyCzasSystemu = self.obecnyCzas
+        if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
+            self.stan = 1
+            self.aktualizujStanSystemu()
+        elif obecne_zdarzenie.typ == 2:
+            self.stan = 2
+            self.aktualizujStanSystemu()
+
 
     def processEvent(self):
         if self.systemEvent is None:
-            self.systemEvent = self.eventQueue.get()
+            self.systemEvent = self.kolejkaZdarzen.get()
             if self.systemEvent is not None:
-                self.remainingProcessingTime = self.systemEvent.service_time
+                self.remainingProcessingTime = self.systemEvent.t_obslugi
 
             self.updateSystemEvents()
             self.updateQueueStatistics()
 
         if self.systemEvent is None:    # jeśli zdarzenie jest null, tzn. że kolejka jest pusta i nic się nie wydarzyło
-            self.timeIdle += self.currentTime - self.currentSystemTime
-            self.currentSystemTime = self.currentTime
+            self.timeIdle += self.obecnyCzas - self.obecnyCzasSystemu
+            self.obecnyCzasSystemu = self.obecnyCzas
             self.updateSystemEvents()
             return
 
-        self.currentSystemTime += self.remainingProcessingTime
+        self.obecnyCzasSystemu += self.remainingProcessingTime
 
-        if self.currentSystemTime < self.currentTime:   # zdarzenie obsłużone
-            self.systemEvent.out_time = self.currentSystemTime
+        if self.obecnyCzasSystemu < self.obecnyCzas:   # zdarzenie obsłużone
+            self.systemEvent.t_wyjscia = self.obecnyCzasSystemu
             self.processedEvents.append(self.systemEvent)
             self.systemEvent = None
             self.timeProcessing += self.remainingProcessingTime
         else:   # zdarzenie częściowo obsłużone
-            self.timeProcessing += (self.remainingProcessingTime - (self.currentSystemTime - self.currentTime))
-            self.remainingProcessingTime = self.currentSystemTime - self.currentTime
-            self.currentSystemTime = self.currentTime
+            self.timeProcessing += (self.remainingProcessingTime - (self.obecnyCzasSystemu - self.obecnyCzas))
+            self.remainingProcessingTime = self.obecnyCzasSystemu - self.obecnyCzas
+            self.obecnyCzasSystemu = self.obecnyCzas
 
     def updateQueueStatistics(self):        # jeśli size się zwiększa tzn. że do kolejki wchodzi zdarzenia; jeśli size się zmniejsza tzn. że z kolejki wychodzi zdarzenie
-        self.queueEvents.append((self.currentSystemTime, self.eventQueue.size()))
+        self.queueEvents.append((self.obecnyCzasSystemu, self.kolejkaZdarzen.size()))
 
-    def updateSystemState(self):            # jeśli state 1 - włączenie systemu; jeśli state 2 - wyłączenie systemu
-        self.systemState.append((self.currentSystemTime, self.state))
+    def aktualizujStanSystemu(self):            # jeśli stan 1 - włączenie systemu; jeśli stan 2 - wyłączenie systemu
+        self.systemState.append((self.obecnyCzasSystemu, self.stan))
 
     def updateSystemEvents(self):           # brak uaktualnień kiedy system jest OFF
         if self.systemEvent is None:
             x = 0
         else:
             x = 1
-        self.systemEvents.append((self.currentSystemTime, x))
+        self.systemEvents.append((self.obecnyCzasSystemu, x))
 
 
