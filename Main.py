@@ -9,7 +9,7 @@ def dopliku(tempLambda, mean):
 
 
 def main():
-    zadanie = 2
+    zadanie = 1
     seed = 128
     open('wyniki2.txt', 'w').close()  # czyszczenie pliku z wynikami
 
@@ -22,8 +22,8 @@ def main():
     elif zadanie == 2:
         minLambda = 0.5
         maxLambda = 4
-        liczbaSymulacji = 2
-        dlugoscSymulacji = 50000
+        liczbaSymulacji = 5
+        dlugoscSymulacji = 10000
         wylaczanie = True
     else:
         print("Błedny numer zadania!")
@@ -41,7 +41,6 @@ def main():
                         zadanie=zadanie)
 
     print("Symulator kolejki M/M/1 - Zadanie", zadanie)
-    np.random.seed(ustawienia.seed)
     tempLambda = ustawienia.minLambda
 
     while tempLambda <= ustawienia.maxLambda:  # symulacje dla wielu wartości lambda
