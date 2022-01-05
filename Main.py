@@ -10,13 +10,13 @@ def dopliku(tempLambda, mean):
 
 def main():
     zadanie = 1
-    seed = 128
+    seed = np.random.randint(1000000000)
     open('wyniki2.txt', 'w').close()  # czyszczenie pliku z wynikami
 
     if zadanie == 1:
         minLambda = 0.5
         maxLambda = 6
-        liczbaSymulacji = 20
+        liczbaSymulacji = 25
         dlugoscSymulacji = 500
         wylaczanie = False
     elif zadanie == 2:
@@ -56,7 +56,7 @@ def main():
             symulacja = Symulacja(ustawienia)
             meanDelaySim = symulacja.uruchom_MM1(lista_zdarzen)
             meanDelaySystemTimeSum += meanDelaySim
-            np.random.seed(ustawienia.seed + 2137 * i)  # zmiana ziarna po każdej symulacji
+            ustawienia.seed = np.random.randint(1000000000)
             print("Symulacja nr: {}, E[T] w aktualnej symulacji: {}\n".format(i + 1, meanDelaySim))
             print("_________________________________________________________________________________________________\n")
         print("E[T] dla danej wartości Lambda:", meanDelaySystemTimeSum / ustawienia.liczbaSymulacji)
