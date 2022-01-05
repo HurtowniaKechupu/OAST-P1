@@ -5,15 +5,15 @@ from Symulacja import *
 #todo dodać drukowanie do pliku
 
 def dopliku(tempLambda, mean):
-    plik = open('wyniki.txt', 'a')
+    plik = open('wyniki2.txt', 'a')
     plik.write(f'{tempLambda} ; {mean} \n')
     plik.close()
 
 
 def main():
-    zadanie = 1
+    zadanie = 2
     seed = 128
-    open('wyniki.txt', 'w').close() # czyszczenie pliku z wynikami
+    open('wyniki2.txt', 'w').close() # czyszczenie pliku z wynikami
 
     if zadanie == 1:
         minLambda = 0.5

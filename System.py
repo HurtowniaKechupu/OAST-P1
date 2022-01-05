@@ -78,6 +78,17 @@ class System:
 
     def obsluz(self, obecne_zdarzenie):
         self.obecnyCzas = obecne_zdarzenie.t_przyjscia
+        self.doProcessing()
+        self.obecnyCzasSystemu = self.obecnyCzas
+        if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
+            self.stan = 1
+            self.aktualizujStanSystemu()
+        elif obecne_zdarzenie.typ == 2:
+            self.stan = 2
+            self.aktualizujStanSystemu()
+
+
+    def doProcessing(self):
         uplywCzasu = self.obecnyCzas - self.obecnyCzasSystemu
         if self.stan == 2:
             self.t_wyl += uplywCzasu
@@ -87,13 +98,8 @@ class System:
 
         while self.obecnyCzasSystemu < self.obecnyCzas:  # obsługa zdarzenia
             self.processEvent()
-        self.obecnyCzasSystemu = self.obecnyCzas
-        if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
-            self.stan = 1
-            self.aktualizujStanSystemu()
-        elif obecne_zdarzenie.typ == 2:
-            self.stan = 2
-            self.aktualizujStanSystemu()
+
+
 
 
     def processEvent(self):
