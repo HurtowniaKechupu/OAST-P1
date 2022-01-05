@@ -14,6 +14,9 @@ class Statistics:   # rysowanie wykresu na podstawie zebranych danych
         self.lambdaList.append(lambda1)
 
     def plot(self):
+
+        # TODO: tutaj wpisywanie do pliku
+
         data_sim = []
         data_the = []
 
@@ -42,11 +45,24 @@ class Statistics:   # rysowanie wykresu na podstawie zebranych danych
 
         x_val1 = [a[0] for a in data_sim]
         y_val1 = [a[1] for a in data_sim]
+
+        # TODO: ogarnąć jaki format aby xlsx czaił
+        plot1_file = open('plot1.txt', 'w')
+        for count, val in enumerate(x_val1):
+            plot1_file.write(f'{val}; {y_val1[count]}')
+        plot1_file.close()
+
         print(x_val1, y_val1)
         #plt.plot(x_val1, y_val1)
         x_val2 = [b[0] for b in data_the]
         y_val2 = [b[1] for b in data_the]
         print(x_val2, y_val2)
+
+        plot2_file = open('plot2.txt', 'w')
+        for count, val in enumerate(x_val2):
+            plot1_file.write(f'{val}; {y_val2[count]}')
+        plot1_file.close()
+
         #plt.plot(x_val2, y_val2)
         #plt.xlabel("Lambda")
         #plt.ylabel("E[T]")
