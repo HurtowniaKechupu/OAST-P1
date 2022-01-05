@@ -17,8 +17,7 @@ class Generator:
         if self.ustawienia.wylaczanie:
             self.generujZdarzeniaPrzelaczania(lista_zdarzen)
 
-        #e = Zdarzenie(3, self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
-        e = Zdarzenie('koniec', self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
+        e = Zdarzenie('koniec', self.ustawienia.dlugoscSymulacji, 0)
         lista_zdarzen.put(e)
         return lista_zdarzen
 
@@ -27,7 +26,6 @@ class Generator:
         if self.ustawienia.minLiczbaZdarzen:
             liczba_wiadomosci = self.ustawienia.minLiczbaZdarzen
             while liczba_wiadomosci != 0:
-                #zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 zdarzenie = Zdarzenie('wiadomosc', czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 lista_zdarzen.put(zdarzenie)
 
@@ -35,7 +33,6 @@ class Generator:
                 liczba_wiadomosci -= 1
 
             while czas < self.ustawienia.dlugoscSymulacji:
-                #zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 zdarzenie = Zdarzenie('wiadomosc', czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 lista_zdarzen.put(zdarzenie)
 
@@ -46,12 +43,10 @@ class Generator:
         wlaczony = True
         while czas < self.ustawienia.dlugoscSymulacji:
             if wlaczony:
-                #zdarzenie = Zdarzenie(2, czas, 0)
                 zdarzenie = Zdarzenie('serwer_off', czas, 0)
                 czas += self.generujZdarzeniePoisson(1 / self.ustawienia.ecoff)
                 wlaczony = False
             else:
-                #zdarzenie = Zdarzenie(1, czas, 0)
                 zdarzenie = Zdarzenie('serwer_on', czas, 0)
                 czas += self.generujZdarzeniePoisson(1 / self.ustawienia.econ)
                 wlaczony = True
@@ -67,8 +62,8 @@ class System:
         self.obecnyCzas = 0.0
         self.obecnyCzasSystemu = 0.0
         self.stan = 1
-        self.t_wyl = 0.0 #czas wyłącz
-        self.t_wl = 0.0 #czas włącz
+        self.t_wyl = 0.0
+        self.t_wl = 0.0
 
         self.systemEvent = None
         self.remainingProcessingTime = 0.0
@@ -84,11 +79,11 @@ class System:
         self.obecnyCzas = obecne_zdarzenie.t_przyjscia
         self.doProcessing()
         self.obecnyCzasSystemu = self.obecnyCzas
-        #if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
+
         if obecne_zdarzenie.typ == 'serwer_on':
             self.stan = 1
             self.aktualizujStanSystemu()
-        #elif obecne_zdarzenie.typ == 2:
+
         elif obecne_zdarzenie.typ == 'serwer_off':
             self.stan = 2
             self.aktualizujStanSystemu()
@@ -101,7 +96,7 @@ class System:
         else:
             self.t_wl += uplywCzasu
 
-        while self.obecnyCzasSystemu < self.obecnyCzas:  # obsługa zdarzenia
+        while self.obecnyCzasSystemu < self.obecnyCzas:
             self.processEvent()
 
     def processEvent(self):
@@ -113,7 +108,7 @@ class System:
             self.updateSystemEvents()
             self.updateQueueStatistics()
 
-        if self.systemEvent is None:    # jeśli zdarzenie jest null, tzn. że kolejka jest pusta i nic się nie wydarzyło
+        if self.systemEvent is None:
             self.timeIdle += self.obecnyCzas - self.obecnyCzasSystemu
             self.obecnyCzasSystemu = self.obecnyCzas
             self.updateSystemEvents()
@@ -131,13 +126,13 @@ class System:
             self.remainingProcessingTime = self.obecnyCzasSystemu - self.obecnyCzas
             self.obecnyCzasSystemu = self.obecnyCzas
 
-    def updateQueueStatistics(self):        # jeśli size się zwiększa tzn. że do kolejki wchodzi zdarzenia; jeśli size się zmniejsza tzn. że z kolejki wychodzi zdarzenie
+    def updateQueueStatistics(self):
         self.queueEvents.append((self.obecnyCzasSystemu, self.kolejkaZdarzen.size()))
 
-    def aktualizujStanSystemu(self):            # jeśli stan 1 - włączenie systemu; jeśli stan 2 - wyłączenie systemu
+    def aktualizujStanSystemu(self):            # stan: 1 - włączenie systemu, 2 - wyłączenie systemu
         self.systemState.append((self.obecnyCzasSystemu, self.stan))
 
-    def updateSystemEvents(self):           # brak uaktualnień kiedy system jest OFF
+    def updateSystemEvents(self):
         if self.systemEvent is None:
             x = 0
         else:

@@ -11,7 +11,7 @@ def dopliku(tempLambda, mean):
 def main():
     zadanie = 2
     seed = 128
-    open('wyniki2.txt', 'w').close() # czyszczenie pliku z wynikami
+    open('wyniki2.txt', 'w').close()  # czyszczenie pliku z wynikami
 
     if zadanie == 1:
         minLambda = 0.5
@@ -48,7 +48,7 @@ def main():
         meanDelaySystemTimeSum = 0.0  # wartość średniego opóźnienia w systemie E[T]
 
         print("\nAktualna wartość Lambda:", tempLambda)
-        for i in range(ustawienia.liczbaSymulacji):  # symulacje powtarzamy wielokrotnie
+        for i in range(ustawienia.liczbaSymulacji):
             ustawienia.tempLambda = tempLambda
             lista_zdarzen = ListaZdarzen()
             generator = Generator(ustawienia)
@@ -59,7 +59,7 @@ def main():
             meanDelaySystemTimeSum += meanDelaySim
             np.random.seed(ustawienia.seed + 2137 * i)  # zmiana ziarna po każdej symulacji
             print("Symulacja nr: {}, E[T] w aktualnej symulacji: {}\n".format(i + 1, meanDelaySim))
-            print("_________________________________________________________________________________________________________\n")
+            print("_________________________________________________________________________________________________\n")
         print("E[T] dla danej wartości Lambda:", meanDelaySystemTimeSum / ustawienia.liczbaSymulacji)
         dopliku(tempLambda, meanDelaySystemTimeSum / ustawienia.liczbaSymulacji)
         tempLambda += 0.25

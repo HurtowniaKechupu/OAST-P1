@@ -1,15 +1,14 @@
 #todo zamienić typ na stringi ["message","server_on","server_off","end"]
 class Zdarzenie:
     def __init__(self, typ, t_przyjscia, t_obslugi):
-        self.typ = typ                      # typ: 0 - message; 1 - server_on; 2 - server_off; 3 - end
-                                            # typ: wiadomosc; serwer_on, serwer_off, koniec
-        self.t_przyjscia = t_przyjscia      # czas wejścia - generowany z rozkładem Poissona
-        self.t_obslugi = t_obslugi          # czas obsługi - generowany z rozkładem Poissona
-        self.t_wyjscia = 0                  # czas wyjścia - rzeczywisty czas wyjścia; t_wyjscia != t_przyjscia + t_obslugi
+        self.typ = typ
+        self.t_przyjscia = t_przyjscia
+        self.t_obslugi = t_obslugi
+        self.t_wyjscia = 0
         self.next = None
 
 
-class ListaZdarzen:    # (single linked list) lista jednokierunkowa
+class ListaZdarzen:
     def __init__(self):
         self.head = None
 
