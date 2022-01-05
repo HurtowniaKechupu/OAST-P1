@@ -60,8 +60,8 @@ class Statistics:   # rysowanie wykresu na podstawie zebranych danych
 
         plot2_file = open('plot2.txt', 'w')
         for count, val in enumerate(x_val2):
-            plot1_file.write(f'{val}; {y_val2[count]}')
-        plot1_file.close()
+            plot2_file.write(f'{val}; {y_val2[count]}')
+        plot2_file.close()
 
         #plt.plot(x_val2, y_val2)
         #plt.xlabel("Lambda")
