@@ -2,6 +2,7 @@
 class Zdarzenie:
     def __init__(self, typ, t_przyjscia, t_obslugi):
         self.typ = typ                      # typ: 0 - message; 1 - server_on; 2 - server_off; 3 - end
+                                            # typ: wiadomosc; serwer_on, serwer_off, koniec
         self.t_przyjscia = t_przyjscia      # czas wejścia - generowany z rozkładem Poissona
         self.t_obslugi = t_obslugi          # czas obsługi - generowany z rozkładem Poissona
         self.t_wyjscia = 0                  # czas wyjścia - rzeczywisty czas wyjścia; t_wyjscia != t_przyjscia + t_obslugi

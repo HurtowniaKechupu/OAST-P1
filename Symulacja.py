@@ -1,7 +1,7 @@
 from Kolejka import *
 from System import *
 
-#todo spolszczyć
+
 class Symulacja:
     def __init__(self, ustawienia):
         self.ustawienia = ustawienia
@@ -23,7 +23,8 @@ class Symulacja:
             obecneZdarzenie = lista_zdarzen.get()
             self.system.obsluz(obecneZdarzenie)   # obsługa zdarzenia
 
-            if obecneZdarzenie.typ == 0:
+            #if obecneZdarzenie.typ == 0:
+            if obecneZdarzenie.typ == 'wiadomosc':
                 self.kolejka.put(obecneZdarzenie)
                 self.system.updateQueueStatistics()
 

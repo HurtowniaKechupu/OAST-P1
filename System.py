@@ -1,7 +1,7 @@
 from Lista_Zdarzen import *
 import numpy as np
 
-#todo spolszczyć
+
 class Generator:
     def __init__(self, ustawienia):
         self.ustawienia = ustawienia
@@ -17,7 +17,8 @@ class Generator:
         if self.ustawienia.wylaczanie:
             self.generujZdarzeniaPrzelaczania(lista_zdarzen)
 
-        e = Zdarzenie(3, self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
+        #e = Zdarzenie(3, self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
+        e = Zdarzenie('koniec', self.ustawienia.dlugoscSymulacji, 0)  # na końcu generowane zdarzenie typu 3 - koniec
         lista_zdarzen.put(e)
         return lista_zdarzen
 
@@ -26,14 +27,16 @@ class Generator:
         if self.ustawienia.minLiczbaZdarzen:
             liczba_wiadomosci = self.ustawienia.minLiczbaZdarzen
             while liczba_wiadomosci != 0:
-                zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                #zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                zdarzenie = Zdarzenie('wiadomosc', czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 lista_zdarzen.put(zdarzenie)
 
                 czas += self.generujCzasWiadomosci()
                 liczba_wiadomosci -= 1
 
             while czas < self.ustawienia.dlugoscSymulacji:
-                zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                #zdarzenie = Zdarzenie(0, czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
+                zdarzenie = Zdarzenie('wiadomosc', czas, self.generujZdarzeniePoisson(1 / self.ustawienia.d))
                 lista_zdarzen.put(zdarzenie)
 
                 czas += self.generujCzasWiadomosci()
@@ -43,11 +46,13 @@ class Generator:
         wlaczony = True
         while czas < self.ustawienia.dlugoscSymulacji:
             if wlaczony:
-                zdarzenie = Zdarzenie(2, czas, 0)
+                #zdarzenie = Zdarzenie(2, czas, 0)
+                zdarzenie = Zdarzenie('serwer_off', czas, 0)
                 czas += self.generujZdarzeniePoisson(1 / self.ustawienia.ecoff)
                 wlaczony = False
             else:
-                zdarzenie = Zdarzenie(1, czas, 0)
+                #zdarzenie = Zdarzenie(1, czas, 0)
+                zdarzenie = Zdarzenie('serwer_on', czas, 0)
                 czas += self.generujZdarzeniePoisson(1 / self.ustawienia.econ)
                 wlaczony = True
 
@@ -75,18 +80,18 @@ class System:
         self.systemEvents = []
         self.systemState = []
 
-
     def obsluz(self, obecne_zdarzenie):
         self.obecnyCzas = obecne_zdarzenie.t_przyjscia
         self.doProcessing()
         self.obecnyCzasSystemu = self.obecnyCzas
-        if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
+        #if obecne_zdarzenie.typ == 1:     # obsługa włączeń i wyłączeń serwera
+        if obecne_zdarzenie.typ == 'serwer_on':
             self.stan = 1
             self.aktualizujStanSystemu()
-        elif obecne_zdarzenie.typ == 2:
+        #elif obecne_zdarzenie.typ == 2:
+        elif obecne_zdarzenie.typ == 'serwer_off':
             self.stan = 2
             self.aktualizujStanSystemu()
-
 
     def doProcessing(self):
         uplywCzasu = self.obecnyCzas - self.obecnyCzasSystemu
@@ -98,9 +103,6 @@ class System:
 
         while self.obecnyCzasSystemu < self.obecnyCzas:  # obsługa zdarzenia
             self.processEvent()
-
-
-
 
     def processEvent(self):
         if self.systemEvent is None:

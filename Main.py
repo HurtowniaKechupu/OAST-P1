@@ -1,8 +1,6 @@
 from Ustawienia import *
 from Symulacja import *
 
-#todo spolszczyć
-#todo dodać drukowanie do pliku
 
 def dopliku(tempLambda, mean):
     plik = open('wyniki2.txt', 'a')
