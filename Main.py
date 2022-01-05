@@ -4,15 +4,8 @@ from Statistics import *
 
 #todo spolszczyć
 #todo dodać drukowanie do pliku
-def generate_eventList(ustawienia, lambda2):   # generacja listy zdarzeń
-    ustawienia.tempLambda = lambda2
-    lista_zdarzen = ListaZdarzen()
-    generator = Generator(ustawienia)
-    generator.generuj(lista_zdarzen)
-    lista_zdarzen.print_list()
-    return lista_zdarzen
 
-
+#todo naprawić tą funkcję bo nie działa
 def print_states(x, y, z):
     print("Zmiany stanu systemu (self.obecnyCzasSystemu, self.stan): {}\n"
           "Zdarzenia w systemie (self.obecnyCzasSystemu, self.systemEvent is None ? 0 : 1): {}\n"
@@ -53,6 +46,7 @@ def main():
 
     print("Symulator kolejki M/M/1 - Zadanie", zadanie)
     np.random.seed(ustawienia.seed)
+    #todo tutaj statistics
     statistics = Statistics(ustawienia)
     tempLambda = ustawienia.minLambda
 
@@ -61,13 +55,17 @@ def main():
 
         print("\nAktualna wartość Lambda:", tempLambda)
         for i in range(ustawienia.liczbaSymulacji):  # symulacje powtarzamy wielokrotnie
-            lista_zdarzen = generate_eventList(ustawienia, tempLambda)
+            ustawienia.tempLambda = tempLambda
+            lista_zdarzen = ListaZdarzen()
+            generator = Generator(ustawienia)
+            generator.generuj(lista_zdarzen)
+            lista_zdarzen.print_list()
             symulacja = Symulacja(ustawienia)
             meanDelaySim = symulacja.uruchom_MM1(lista_zdarzen)
             meanDelaySystemTimeSum += meanDelaySim
             np.random.seed(ustawienia.seed + 2137 * i)  # zmiana ziarna po każdej symulacji
             print("Symulacja nr: {}, E[T] w aktualnej symulacji: {}\n".format(i + 1, meanDelaySim))
-            print_states(symulacja.system.systemState, symulacja.system.systemEvents, symulacja.system.queueEvents)
+            #print_states(symulacja.system.systemState, symulacja.system.systemEvents, symulacja.system.queueEvents)
             print("------------------------------------------------------------------------------------------------------------------------------------\n")
         print("E[T] dla danej wartości Lambda:", meanDelaySystemTimeSum / ustawienia.liczbaSymulacji)
         statistics.addStatistics(meanDelaySystemTimeSum / ustawienia.liczbaSymulacji, tempLambda)
