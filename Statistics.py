@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 #todo wywalić statystyki
 class Statistics:   # rysowanie wykresu na podstawie zebranych danych
@@ -43,12 +43,12 @@ class Statistics:   # rysowanie wykresu na podstawie zebranych danych
         x_val1 = [a[0] for a in data_sim]
         y_val1 = [a[1] for a in data_sim]
         print(x_val1, y_val1)
-        plt.plot(x_val1, y_val1)
+        #plt.plot(x_val1, y_val1)
         x_val2 = [b[0] for b in data_the]
         y_val2 = [b[1] for b in data_the]
         print(x_val2, y_val2)
-        plt.plot(x_val2, y_val2)
-        plt.xlabel("Lambda")
-        plt.ylabel("E[T]")
-        plt.legend(['E[T] empiryczne', 'E[T] teoretyczne'])
-        plt.show()
+        #plt.plot(x_val2, y_val2)
+        #plt.xlabel("Lambda")
+        #plt.ylabel("E[T]")
+        #plt.legend(['E[T] empiryczne', 'E[T] teoretyczne'])
+        #plt.show()
