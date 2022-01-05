@@ -1,4 +1,4 @@
-from Queue1 import *
+from Queue import *
 from System import *
 
 #todo spolszczyć
@@ -14,7 +14,7 @@ class Simulation:
 
         self.meanDelay = 0.0
 
-        self.queue = Queue1()   # pojedyncze zdarzenie generowane w konstruktorze kolejki
+        self.queue = Queue()   # pojedyncze zdarzenie generowane w konstruktorze kolejki
         self.system = System(self.queue, self.configuration)    # system (serwer) jest domyślnie pusty
 
     def run_MM1(self, event_list):
