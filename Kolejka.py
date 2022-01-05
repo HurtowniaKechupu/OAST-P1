@@ -1,6 +1,10 @@
 
 #todo spolszczyć
+<<<<<<< HEAD:Kolejka.py
 class Kolejka:
+=======
+class Queue:
+>>>>>>> 5f44afbee02f09b65a99e0c53929d1bbf75defc1:Queue.py
     def __init__(self):
         self.eventsInQueue = []
 
